@@ -17,11 +17,13 @@ module.exports = {
       },
       files: [".eslintrc.{js,cjs}"],
       parserOptions: {
-        sourceType: "script",
-        project: "./tsconfig.json",
+        sourceType: "module",
+        project: "tsconfig.json",
+        tsconfigRootDir: "./",
       },
     },
   ],
+  ignorePatterns: ["src/**/*.js"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: "latest",
