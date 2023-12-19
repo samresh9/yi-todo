@@ -66,6 +66,7 @@
   },
   "include": [
     "src/**/*",
+    "DB/**/*",
   ],
   "exclude": ["node_modules", "dist"],
 }
