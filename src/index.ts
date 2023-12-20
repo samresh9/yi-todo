@@ -20,7 +20,7 @@ app.post("/tasks", async (req: Request, res: Response) => {
       },
     });
     res
-      .status(201)
+      .status(203)
       .json({ message: "Task created successfully", task: newTask });
   } catch (error) {
     console.error("Error creating task:", error);
