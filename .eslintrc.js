@@ -19,14 +19,21 @@ module.exports = {
       parserOptions: {
         sourceType: "module",
         project: "tsconfig.json",
-        tsconfigRootDir: "./",
+        tsconfigRootDir: ".",
       },
     },
   ],
-  ignorePatterns: ["src/**/*.js"],
+  ignorePatterns: ["src/**/*.js", "dist"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: "latest",
   },
-  rules: {},
+  rules: {
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      {
+        checksVoidReturn: false,
+      },
+    ],
+  },
 };
