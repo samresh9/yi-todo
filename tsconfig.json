@@ -66,6 +66,8 @@
   },
   "include": [
     "src/**/*",
+    "DB/**/*",
+    ".eslintrc.js",
   ],
   "exclude": ["node_modules", "dist"],
 }
