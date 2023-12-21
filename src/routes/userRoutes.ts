@@ -8,4 +8,4 @@ const router = express.Router();
 router.post("/register", handleUserRegister);
 router.post("/login", handleUserLogin);
 
-export { router };
+export default router;

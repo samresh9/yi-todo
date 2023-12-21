@@ -1,9 +1,8 @@
 import * as dotenv from "dotenv";
 import express from "express";
-import type { Express, Request, Response } from "express";
-import type { Task } from "../DB/dbConfig";
-import { setUser } from "./utils/authJwt";
+import type { Express } from "express";
 import prisma from "../DB/dbConfig";
+import userRoutes from "./routes/userRoutes";
 dotenv.config();
 const app: Express = express();
 const port = parseInt(process.env.PORT ?? "7000");
@@ -35,7 +34,7 @@ app.use(express.json());
 // app.get("/", (req, res) => {
 //   res.send("hi");
 // });
-// app.use("/user", use);
+app.use("/user", userRoutes);
 
 prisma
   .$connect()

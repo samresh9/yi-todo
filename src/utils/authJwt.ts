@@ -2,8 +2,9 @@ import * as dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import type { JwtPayload, Secret } from "jsonwebtoken";
 dotenv.config();
-// const jwtSecret: Secret = "samresh";
-const jwtSecret: Secret = process.env.JWT_SECRETKEY as Secret;
+// test secretkey without env
+const jwtSecret: Secret = "samresh";
+// const jwtSecret: Secret = process.env.JWT_SECRETKEY;
 // interface User {
 //   id: number;
 //   email: string;
