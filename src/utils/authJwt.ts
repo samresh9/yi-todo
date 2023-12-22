@@ -1,15 +1,10 @@
-import * as dotenv from "dotenv";
+import "dotenv/config";
 import jwt from "jsonwebtoken";
 import type { JwtPayload, Secret } from "jsonwebtoken";
-dotenv.config();
-// test secretkey without env
-const jwtSecret: Secret = "samresh";
-// const jwtSecret: Secret = process.env.JWT_SECRETKEY;
-// interface User {
-//   id: number;
-//   email: string;
-// }
+console.log(typeof process.env.JWT_SECRET);
 
+// need to make the type such that if the env is not present typescript should give us error
+const jwtSecret = process.env.JWT_SECRET as Secret;
 async function setUser(user: JwtPayload): Promise<string> {
   const payload = {
     id: user.id,
