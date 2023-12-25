@@ -5,18 +5,17 @@ import {
   handleUpdateTask,
   handleDeleteTask,
 } from "../controllers/taskController";
-import { checkAuthentication } from "../middlewares/authMiddleware";
 import { validate } from "../middlewares/validationMiddleware";
-import { taskSchema } from "../utils/validationSchema";
+import {
+  taskCreateSchema,
+  taskUpdateSchema,
+  taskDeleteSchema,
+} from "../utils/validationSchema";
 const router = express.Router();
 
-router.post(
-  "/",
-  checkAuthentication,
-  validate(taskSchema),
-  handleCreateNewTask,
-);
-router.get("/", checkAuthentication, handleGetAllTask);
-router.put("/", checkAuthentication, handleUpdateTask);
-router.delete("/", checkAuthentication, handleDeleteTask);
+router.post("/", validate(taskCreateSchema), handleCreateNewTask);
+router.get("/", handleGetAllTask);
+router.put("/", validate(taskUpdateSchema), handleUpdateTask);
+router.delete("/", validate(taskDeleteSchema), handleDeleteTask);
+
 export default router;

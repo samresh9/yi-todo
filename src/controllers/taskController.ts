@@ -2,11 +2,17 @@ import prisma from "../../DB/dbConfig";
 import { StatusCodes } from "http-status-codes";
 import type { z } from "zod";
 import type { Request, Response } from "express";
-import type { taskSchema } from "../utils/validationSchema";
+import type {
+  taskCreateSchema,
+  taskUpdateSchema,
+  taskDeleteSchema,
+} from "../utils/validationSchema";
 
-type TaskData = z.infer<typeof taskSchema>;
+type TaskCreateData = z.infer<typeof taskCreateSchema>;
+type TaskUpdateData = z.infer<typeof taskUpdateSchema>;
+type TaskDeleteData = z.infer<typeof taskDeleteSchema>;
 async function handleCreateNewTask(
-  req: Request<unknown, unknown, TaskData>, // Request<ParamsType, QueryType, BodyType>
+  req: Request<unknown, unknown, TaskCreateData>, // Request<ParamsType, QueryType, BodyType>
   res: Response,
 ): Promise<void> {
   console.log(res.locals.user);
@@ -36,7 +42,9 @@ async function handleGetAllTask(req: Request, res: Response): Promise<void> {
       where: {
         id,
       },
-      include: {
+      select: {
+        id: true,
+        email: true,
         tasks: true,
       },
     });
@@ -47,7 +55,10 @@ async function handleGetAllTask(req: Request, res: Response): Promise<void> {
       .json({ success: false, error: "Internal Server Error" });
   }
 }
-async function handleUpdateTask(req: Request, res: Response): Promise<void> {
+async function handleUpdateTask(
+  req: Request<unknown, unknown, TaskUpdateData>,
+  res: Response,
+): Promise<void> {
   try {
     const { id } = res.locals.user;
     const { taskId, title, description, completed } = req.body;
@@ -72,7 +83,10 @@ async function handleUpdateTask(req: Request, res: Response): Promise<void> {
   }
 }
 
-async function handleDeleteTask(req: Request, res: Response): Promise<void> {
+async function handleDeleteTask(
+  req: Request<unknown, unknown, TaskDeleteData>,
+  res: Response,
+): Promise<void> {
   try {
     const { taskId } = req.body;
     const deleteTask = await prisma.task.delete({
