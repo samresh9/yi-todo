@@ -6,13 +6,21 @@ async function checkAuthentication(
   next: NextFunction,
 ): Promise<void> {
   const authHeaderValue = req.headers.authorization;
-
+  console.log("in auth");
   if (authHeaderValue == null) {
-    next();
+    res
+      .status(401)
+      .json({ error: "Unauthorized: Invalid token or user not found" });
     return;
   }
   const token: string = authHeaderValue.split(" ")[1];
   const user = await getUser(token);
+  if (user === null) {
+    res
+      .status(401)
+      .json({ error: "Unauthorized: Invalid token or user not found" });
+    return;
+  }
   res.locals.user = user;
   next();
 }
