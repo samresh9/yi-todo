@@ -1,5 +1,6 @@
 import { getUser } from "../utils/authJwt";
 import type { Request, Response, NextFunction } from "express";
+import { StatusCodes } from "http-status-codes";
 async function checkAuthentication(
   req: Request,
   res: Response,
@@ -9,7 +10,7 @@ async function checkAuthentication(
   console.log("in auth");
   if (authHeaderValue == null) {
     res
-      .status(401)
+      .status(StatusCodes.BAD_REQUEST)
       .json({ error: "Unauthorized: Invalid token or user not found" });
     return;
   }
@@ -17,7 +18,7 @@ async function checkAuthentication(
   const user = await getUser(token);
   if (user === null) {
     res
-      .status(401)
+      .status(StatusCodes.BAD_REQUEST)
       .json({ error: "Unauthorized: Invalid token or user not found" });
     return;
   }

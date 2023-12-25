@@ -15,10 +15,21 @@ async function handleCreateNewTask(
   req: Request<unknown, unknown, TaskCreateData>, // Request<ParamsType, QueryType, BodyType>
   res: Response,
 ): Promise<void> {
-  console.log(res.locals.user);
   try {
     const { title, description, completed } = req.body;
     const { id } = res.locals.user;
+    const checkTask = await prisma.task.findFirst({
+      where: {
+        title,
+        completed,
+      },
+    });
+    if (checkTask != null) {
+      res
+        .status(StatusCodes.CONFLICT)
+        .json({ success: false, error: "Task already Exists" });
+      return;
+    }
     const newTask = await prisma.task.create({
       data: {
         user_id: id,
@@ -63,7 +74,7 @@ async function handleUpdateTask(
     const { id } = res.locals.user;
     const { taskId, title, description, completed } = req.body;
     console.log(taskId);
-    const allTask = await prisma.task.update({
+    const updatedTask = await prisma.task.update({
       where: {
         id: taskId,
         user_id: id,
@@ -74,8 +85,7 @@ async function handleUpdateTask(
         completed,
       },
     });
-    console.log(allTask);
-    res.json({ success: true, data: allTask });
+    res.json({ success: true, data: updatedTask });
   } catch (err) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)

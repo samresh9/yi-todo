@@ -1,18 +1,17 @@
 import prisma from "../../DB/dbConfig";
-import type { User } from "../../DB/dbConfig";
 import { StatusCodes } from "http-status-codes";
 import type { Request, Response } from "express";
+import type { User } from "../../DB/dbConfig";
+import type { z } from "zod";
+import type { userSchema } from "../utils/validationSchema";
 import bcrypt from "bcrypt";
 import { setUser } from "../utils/authJwt";
 const saltRounds = 10;
 
-interface ReqBody {
-  email: string;
-  password: string;
-}
+type UserData = z.infer<typeof userSchema>;
 async function handleUserRegister(req: Request, res: Response): Promise<void> {
   try {
-    const { email, password }: ReqBody = req.body;
+    const { email, password }: UserData = req.body;
     const user: User | null = await prisma.user.findUnique({
       where: {
         email,
@@ -27,7 +26,7 @@ async function handleUserRegister(req: Request, res: Response): Promise<void> {
       return;
     }
     const passwordHash = await bcrypt.hash(password, saltRounds);
-    const newUser = await prisma.user.create({
+    const newUser: User = await prisma.user.create({
       data: {
         email,
         password: passwordHash,
@@ -43,9 +42,12 @@ async function handleUserRegister(req: Request, res: Response): Promise<void> {
   }
 }
 
-async function handleUserLogin(req: Request, res: Response): Promise<void> {
+async function handleUserLogin(
+  req: Request<unknown, unknown, UserData>,
+  res: Response,
+): Promise<void> {
   try {
-    const { email, password }: ReqBody = req.body;
+    const { email, password } = req.body;
     const user = await prisma.user.findFirst({
       where: {
         email,
@@ -60,7 +62,7 @@ async function handleUserLogin(req: Request, res: Response): Promise<void> {
     const result = await bcrypt.compare(password, user.password);
     if (result === !true) {
       res
-        .status(StatusCodes.UNAUTHORIZED)
+        .status(StatusCodes.BAD_REQUEST)
         .json({ success: false, error: "Incorrect password" });
       return;
     }
