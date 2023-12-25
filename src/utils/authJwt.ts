@@ -10,11 +10,21 @@ async function setUser(user: JwtPayload): Promise<string> {
     id: user.id,
     email: user.email,
   };
-  return jwt.sign(payload, jwtSecret);
+  return jwt.sign(payload, jwtSecret, { expiresIn: "1d" });
 }
 
-async function getUser(token: string): Promise<JwtPayload> {
-  return jwt.verify(token, jwtSecret) as JwtPayload;
+async function getUser(token: string): Promise<JwtPayload | null> {
+  try {
+    return jwt.verify(token, jwtSecret) as JwtPayload;
+  } catch (err) {
+    if (err instanceof jwt.JsonWebTokenError) {
+      console.error("JWT Token Error:", err.message);
+    }
+    if (err instanceof jwt.TokenExpiredError) {
+      console.error("JWT Token Expired:", err.message);
+    }
+    return null;
+  }
 }
 
 export { setUser, getUser };
