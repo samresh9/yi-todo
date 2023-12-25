@@ -66,6 +66,7 @@
   },
   "include": [
     "src/**/*",
+    "src/**/*/",
     "DB/**/*",
     ".eslintrc.js",
   ],
